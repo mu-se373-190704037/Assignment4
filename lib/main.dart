@@ -1,60 +1,69 @@
 import 'package:flutter/material.dart';
+void main()
+{
 
-void main() {
-  runApp (MyApp());
+  runApp(MyApp());
 }
-String?_dateTime;
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter Datepicker',
       theme: ThemeData(
-
         primarySwatch: Colors.purple,
-        textTheme: TextTheme(bodyText1:TextStyle(fontSize: 21))
       ),
-      home: Home(),
+      home: MyHomePage(),
     );
   }
 }
 
-class Home extends StatefulWidget {
+class MyHomePage extends StatefulWidget {
   @override
-  _HomeState createState()=> _HomeState();
+  _MyHomePageState createState()
+  {
+    return _MyHomePageState();
+  }
 }
-  class _HomeState extends State<Home>{
-   late DateTime _dateTime;
 
+class _MyHomePageState extends State<MyHomePage> {
+
+  String date = "";
+  DateTime selectedDate = DateTime.now();
   @override
-    Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Flutter Datepicker"),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(_dateTime==null? "Nothing has been picked yet":_dateTime.toString()),
-            RaisedButton(
-              child: Text("Pick a date"),
-              onPressed: (){
-                showDatePicker(context: context,
-                    initialDate: _dateTime== null ? DateTime.now():_dateTime,
-                    firstDate:DateTime(2001),
-                    lastDate: DateTime(2021)
-                ).then((date){
-                  setState(() {
-                    _dateTime=date!;
-                  });
-                });
+            ElevatedButton(
+              onPressed: () {
+                _selectDate(context);
               },
-            )
+              child: Text("Choose Date"),
+            ),
+            Text("${selectedDate.day}/${selectedDate.month}/${selectedDate.year}")
           ],
         ),
       ),
     );
-
   }
 
+  _selectDate(BuildContext context) async {
+    final DateTime? selected = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2010),
+      lastDate: DateTime(2025),
+    );
+    if (selected != null && selected != selectedDate)
+      setState(() {
+        selectedDate = selected;
+      });
   }
+
+}
